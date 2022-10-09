@@ -28,7 +28,7 @@ namespace SixLabors.ImageSharp
                 throw new ArgumentNullException(nameof(source));
             }
 
-            source.SaveAsTiff(path, null);
+            source.SaveAsTiff(path, null as TiffEncoder);
         }
 
         /// <summary>

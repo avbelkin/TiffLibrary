@@ -20,7 +20,7 @@ namespace TiffLibrary.ImageSharpAdapter
         public bool IgnoreOrientation { get; set; }
 
         /// <inheritdoc />
-        public Image<TPixel> Decode<TPixel>(Configuration configuration, Stream stream) where TPixel : unmanaged, IPixel<TPixel>
+        public Image<TPixel> Decode<TPixel>(Configuration configuration, Stream stream, CancellationToken cancellationToken) where TPixel : unmanaged, IPixel<TPixel>
         {
             if (configuration is null)
             {
@@ -37,8 +37,8 @@ namespace TiffLibrary.ImageSharpAdapter
         }
 
         /// <inheritdoc />
-        public Image Decode(Configuration configuration, Stream stream)
-            => Decode<Rgba32>(configuration, stream);
+        public Image Decode(Configuration configuration, Stream stream, CancellationToken cancellationToken)
+            => Decode<Rgba32>(configuration, stream, cancellationToken);
 
         /// <inheritdoc />
         public Task<Image<TPixel>> DecodeAsync<TPixel>(Configuration configuration, Stream stream, CancellationToken cancellationToken) where TPixel : unmanaged, IPixel<TPixel>
@@ -62,7 +62,7 @@ namespace TiffLibrary.ImageSharpAdapter
             => await DecodeAsync<Rgba32>(configuration, stream, cancellationToken).ConfigureAwait(false);
 
         /// <inheritdoc />
-        public IImageInfo Identify(Configuration configuration, Stream stream)
+        public IImageInfo Identify(Configuration configuration, Stream stream, CancellationToken cancellationToken)
         {
             if (configuration is null)
             {

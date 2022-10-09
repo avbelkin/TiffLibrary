@@ -19,7 +19,7 @@ namespace TiffLibrary.ImageSharpAdapter
 
         public override IMemoryOwner<byte> Rent(int minBufferSize = -1)
         {
-            return _memoryAllocator.AllocateManagedByteBuffer(Math.Max(minBufferSize, MinimumBufferSize));
+            return _memoryAllocator.Allocate<byte>(Math.Max(minBufferSize, MinimumBufferSize));
         }
 
         protected override void Dispose(bool disposing)
