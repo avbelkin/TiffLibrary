@@ -1,8 +1,10 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing.Processors;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TiffLibrary.ImageSharpAdapter
 {
@@ -87,8 +89,19 @@ namespace TiffLibrary.ImageSharpAdapter
             int width = copySize.Width;
             for (int row = 0; row < copySize.Height; row++)
             {
-                ref TSource sourceSpan = ref Unsafe.Add(ref MemoryMarshal.GetReference(source.GetPixelRowSpan(sourceOffset.Y + row)), sourceOffset.X);
-                ref TDest destinationSpan = ref Unsafe.Add(ref MemoryMarshal.GetReference(destination.GetPixelRowSpan(destinationOffset.Y + row)), destinationOffset.X);
+                TSource[]? sourcePixels = default;
+                source.ProcessPixelRows(pixelAccessor =>
+                {
+                    sourcePixels = pixelAccessor.GetRowSpan(sourceOffset.Y + row).ToArray();
+                });
+                ref TSource sourceSpan = ref Unsafe.Add(ref MemoryMarshal.GetReference(new Span<TSource>(sourcePixels)), sourceOffset.X);
+
+                TDest[]? destinatioPixels = default;
+                destination.ProcessPixelRows(pixelAccessor =>
+                {
+                    destinatioPixels = pixelAccessor.GetRowSpan(destinationOffset.Y + row).ToArray();
+                });
+                ref TDest destinationSpan = ref Unsafe.Add(ref MemoryMarshal.GetReference(new Span<TDest>(destinatioPixels)), destinationOffset.X);
 
                 for (int i = 0; i < width; i++)
                 {
