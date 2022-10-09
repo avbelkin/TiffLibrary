@@ -115,7 +115,14 @@ namespace TiffLibrary.ImageSharpAdapter
                 {
                     throw new ObjectDisposedException(GetType().FullName);
                 }
-                return MemoryMarshal.Cast<TImageSharpPixel, TTiffPixel>(_image.GetPixelRowSpan(_rowIndex).Slice(_start, _length));
+
+                TImageSharpPixel[]? pixels = default;
+                _image.ProcessPixelRows(pixelAccessor =>
+                {
+                    pixels = pixelAccessor.GetRowSpan(_rowIndex).Slice(_start, _length).ToArray();
+                });
+
+                return MemoryMarshal.Cast<TImageSharpPixel, TTiffPixel>(new Span<TImageSharpPixel>(pixels));
             }
 
             public override void Dispose()

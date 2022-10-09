@@ -131,7 +131,7 @@ namespace SixLabors.ImageSharp
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            source.SaveAsTiff(stream, null);
+            source.SaveAsTiff(stream, null as TiffEncoder);
         }
 
         /// <summary>
