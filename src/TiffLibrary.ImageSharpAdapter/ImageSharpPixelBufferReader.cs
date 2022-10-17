@@ -67,13 +67,9 @@ namespace TiffLibrary.ImageSharpAdapter
 
             for (int row = 0; row < height; row++)
             {
-                TPixel[]? pixels = default;
-                image.ProcessPixelRows(pixelAccessor =>
-                {
-                    pixels = pixelAccessor.GetRowSpan(offsetY + row).Slice(offsetX, width).ToArray();
-                });
+                Span<TPixel> sourceSpan = image.GetPixelRowSpan(offsetY + row).Slice(offsetX, width);
                 using TiffPixelSpanHandle<TPixel> destinationHandle = destination.GetRowSpan(row);
-                pixels.CopyTo(destinationHandle.GetSpan());
+                sourceSpan.CopyTo(destinationHandle.GetSpan());
             }
 
             return default;
